@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { BAD_REQUEST, INTERNAL_SERVER_ERROR } from "../constants/httpStatus.js";
 import handler from 'express-async-handler';
-import { FamilyPlanModel } from "../models/familyPlan.model.js";
+import FamilyPlanModel  from "../models/familyPlan.model.js";
 import { UserModel } from "../models/user.model.js";
 
 const router = Router();
