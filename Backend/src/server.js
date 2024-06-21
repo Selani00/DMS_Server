@@ -1,5 +1,4 @@
 import dotenv from 'dotenv';
-dotenv.config();
 import express from "express";
 import cors from 'cors';
 import userRouter from './routers/user.router.js';
@@ -21,7 +20,7 @@ import {dbconnect} from './config/database.config.js';
 import http from 'http';
 import multer from 'multer';
 
-
+dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
