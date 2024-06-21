@@ -50,7 +50,7 @@ app.use('/api/devices', deviceRouter);
 
 dbconnect();
 process.env.GOOGLE_APPLICATION_CREDENTIALS;
-firebase
+
 initializeApp({
   credential: applicationDefault(),
   id:"disaster-management-7d158"
