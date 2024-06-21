@@ -1,6 +1,6 @@
 import { Router } from "express";
 import handler from "express-async-handler";
-import { ShelterModel } from "../models/shelter.model.js";
+import  ShelterModel  from "../models/shelter.model.js";
 import { BAD_REQUEST } from "../constants/httpStatus.js";
 
 const router = Router();
@@ -79,7 +79,7 @@ router.post('/getNearbyShelters', handler(async (req, res) => {
 
             const { latitude: shelterLat, longitude: shelterLon } = shelterCoords;
             const distance = calculateDistance(latitude, longitude, shelterLat, shelterLon);
-            return distance <= 10; // 5 km radius
+            return distance <= 10; 
         });
 
         res.send(nearbyShelters);
