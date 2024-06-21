@@ -16,6 +16,7 @@ import liveChatRouter from './routers/livechat.router.js';
 import alertRouter from './routers/alerts.router.js';
 import deviceRouter from './routers/devices.router.js';
 import chatMessage from './models/livechat.model.js';
+import familyPlanRouter from './routers/familyPlan.router.js';
 import {Server} from 'socket.io';
 import {dbconnect} from './config/database.config.js';
 import { initializeApp,applicationDefault } from 'firebase-admin/app';
@@ -48,6 +49,7 @@ app.use('/api/contacts', ContactRouter);
 app.use('/api/roadCloses', RoadCloseRouter);
 app.use('/api/email', EmailRouter);
 app.use('/api/alerts', alertRouter);
+app.use('/api/familyPlans', familyPlanRouter);
 app.use('/api/devices', deviceRouter);
 
 dbconnect();
