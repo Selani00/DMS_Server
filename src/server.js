@@ -17,6 +17,7 @@ import alertRouter from './routers/alerts.router.js';
 import deviceRouter from './routers/devices.router.js';
 import {Server} from 'socket.io';
 import {dbconnect} from './config/database.config.js';
+import { initializeApp,applicationDefault } from 'firebase-admin/app';
 import http from 'http';
 import multer from 'multer';
 
