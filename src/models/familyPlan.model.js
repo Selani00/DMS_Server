@@ -20,4 +20,6 @@ export const FamilyPlanSchema = new Schema(
     }
 );
 
-export const FamilyPlanModel = model('familyPlans', FamilyPlanSchema);
+const FamilyPlanModel = model('familyPlans', FamilyPlanSchema);
+
+export default FamilyPlanModel;
