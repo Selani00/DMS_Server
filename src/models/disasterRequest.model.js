@@ -13,14 +13,16 @@ export const DisasterRequestSchema = new Schema(
                 }
             ],
             default: []},
-        affectedCount: {type: Number, required: true},
+        image: {type:[{type:String}], required:false},        
+        affectedCount: {type: String, required: true},
         medicalNeed: {type: Boolean, default: false},
         otherNeeds: {type: String, required: false},
-        image: {type:[{type:String}], required:false}, 
         requestTime: {type: String, required: true},
         requestDate: {type: String, required: true},
         read: {type: Boolean, default: false},
-        verify: {type: Boolean, default: false}
+        verify: {type: Boolean, default: false},
+        requestProvince: {type: String, required: false},
+        respondSent: {type: Boolean, default: false}
     },
    
     {
@@ -35,7 +37,6 @@ export const DisasterRequestSchema = new Schema(
         timestamps: true,
     }
 );
-
 const DisasterRequestModel = model('disasterRequest', DisasterRequestSchema);
 
 export default DisasterRequestModel;

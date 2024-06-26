@@ -13,16 +13,17 @@ router.post('/request',handler(async (req,res) => {
         disasterLocation,
         affectedCount,
         medicalNeed,
-        image,
         otherNeeds,
         disasterLocationLatLan,
-        read} = req.body;
+        read,
+        image} = req.body;
 
         const currentDateTime = new Date();
         const requestDate = currentDateTime.toDateString();
         const requestTime = currentDateTime.toTimeString();
 
         const newID = await generateRequestID(disasterType);
+        const requestProvince = await getRequestProvince(disasterLocationLatLan);
 
         const newRequest = {
             requestID: newID,
@@ -30,13 +31,14 @@ router.post('/request',handler(async (req,res) => {
             requesterName,
             disasterLocation,
             disasterLocationLatLan,
-            image,
             affectedCount,
             medicalNeed,
             otherNeeds,
             requestTime,
             requestDate,
-            read
+            read,
+            image,
+            requestProvince: requestProvince
         };
 
         const result = await DisasterRequestModel.create(newRequest);
@@ -66,17 +68,17 @@ router.post('/getAllVerify', handler(async(req,res) => {
 }));
 
 router.get('/getRequest/:requestID', handler(async(req, res) => {
-        const { requestID } = req.params;
-        console.log("requestID: ", requestID)
+    const { requestID } = req.params;
+    console.log("requestID: ", requestID)
 
-    try{
-        const request = await DisasterRequestModel.findOne({requestID}); //need to change accordingly
-        console.log("Request:",request);
-        res.send(request);
-    } catch (error) {
-        console.error(error);
-        res.status(INTERNAL_SERVER_ERROR).send("Internal server error");
-    }
+try{
+    const request = await DisasterRequestModel.findOne({requestID}); //need to change accordingly
+    console.log("Request:",request);
+    res.send(request);
+} catch (error) {
+    console.error(error);
+    res.status(INTERNAL_SERVER_ERROR).send("Internal server error");
+}
 }));
 
 router.put('/updateRequest/:requestID', handler(async (req, res) => {
@@ -88,9 +90,9 @@ router.put('/updateRequest/:requestID', handler(async (req, res) => {
             { read: true },
             { new: true } // Return the updated document
         );
-        return res.status(INTERNAL_SERVER_ERROR).send(request);
+        res.status(200).send(request);
+
     } catch (error) {
-        console.error(error);
         return res.status(INTERNAL_SERVER_ERROR).send("Internal server error");
     }
 }));
@@ -110,6 +112,51 @@ router.post('/setVerify', handler(async (req, res) =>{
     }
 }));
 
+router.post('/showUnverify', handler(async (req, res) =>{
+    const {requestIDs} = req.body;
+
+    try{
+        const data = await DisasterRequestModel.aggregate([
+            { $match: { requestID: { $in: requestIDs }, respondSent: false } }
+        ]);
+
+        console.log("Unverify: ", data);
+
+        if(data != null){
+            res.send(true);
+        }else{
+            res.send(false);
+        }
+    }catch(error){
+        res.status(BAD_REQUEST).send("Request unverify check error")
+    }
+}));
+
+//not finished
+const sendingResponds = async(requests) =>{
+    try{
+        const sendTo = "engerrev897@gmail.com";
+        const sendFrom = process.env.Email_USER;
+        const replyTo = "engerrev897@gmail.com";
+        const subject = "Disaster Management:Request Respond";
+        const message = `
+            <h3>Disaster Request Respond</h3>
+            <p>Request Name: ${requesterName}</P>
+            <p>Request Location: ${requesterLocation}</P>
+            <p>Request Location Map: ${requestLocationMap}</P>
+            <p>Approximate Affected: ${requestAffected}</P>
+            <p>Medical Need: ${medicalNeed}</P>
+        `;
+
+        await sendEmail(subject, message, sendTo, sendFrom, replyTo);
+        res.status(200).send("Email send successful!");
+
+    }catch(error){
+        console.log(error);
+        res.status(BAD_REQUEST).send("Email send failed!");
+    }
+}
+
 //need to change accordingly
 const generateRequestID = async(disasterType) => {
 
@@ -124,5 +171,25 @@ const generateRequestID = async(disasterType) => {
     return newID;
 
 };
+
+const getRequestProvince = async (locationLat) => {
+    try{
+        const url = `https://maps.googleapis.com/maps/api/geocode/json?latlng=${locationLat[0]},${locationLat[1]}&key=${process.env.GOOGLEMAP_API}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        if (data.results.length > 0) {
+            // Loop through the address components to find the province
+            for (const component of data.results[0].address_components) {
+                if (component.types.includes("administrative_area_level_1")) {
+                    return component.long_name;  // Return the province name
+                }
+            }
+        }
+    }catch(error){
+        console.log("Province get error!");
+    }
+}
 
 export default router
