@@ -84,6 +84,4 @@ io.on('connection', async (socket) => {
       console.log(err);
     });
   });
-
-  
 });
