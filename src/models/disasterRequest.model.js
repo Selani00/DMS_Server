@@ -16,6 +16,7 @@ export const DisasterRequestSchema = new Schema(
         affectedCount: {type: Number, required: true},
         medicalNeed: {type: Boolean, default: false},
         otherNeeds: {type: String, required: false},
+        image: {type:[{type:String}], required:false}, 
         requestTime: {type: String, required: true},
         requestDate: {type: String, required: true},
         read: {type: Boolean, default: false},

@@ -13,6 +13,7 @@ router.get('/request',handler(async (req,res) => {
         disasterLocation,
         affectedCount,
         medicalNeed,
+        image,
         otherNeeds,
         disasterLocationLatLan,
         read} = req.body;
@@ -29,6 +30,7 @@ router.get('/request',handler(async (req,res) => {
             requesterName,
             disasterLocation,
             disasterLocationLatLan,
+            image,
             affectedCount,
             medicalNeed,
             otherNeeds,
