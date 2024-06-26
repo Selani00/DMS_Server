@@ -162,11 +162,21 @@ const generateRequestID = async(disasterType) => {
 
     const disasterCode = disasterType.substring(0, 2);
     const min = 0;
-    const max = 100;
-    const requestNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+    const max = 1000;
+    let requestNumber = Math.floor(Math.random() * (max - min + 1)) + min;
 
-    const newID = disasterCode + requestNumber.toString();
-    console.log("ID",newID);
+    let newID = disasterCode + requestNumber.toString();
+
+    try{
+        while(await DisasterRequestModel.findOne({requestID: newID})){
+            requestNumber++;
+            newID = disasterCode + requestNumber.toString();
+        }
+        console.log("ID",newID);
+        return newID;
+    }catch(error){
+        console.log("ID generate error");
+    }
 
     return newID;
 
